@@ -19,7 +19,7 @@ package vpork
 
 import vpork.voldemort.VoldemortClientFactory
 import vpork.cassandra.CassandraClientFactory
-import vpork.cassandra.CouchDBClientFactory
+import vpork.couchdb.CouchDBClientFactory
 import vpork.memory.MemoryClientFactory
 
 import java.util.concurrent.atomic.AtomicBoolean
@@ -157,19 +157,26 @@ class VPork {
             return
         }
 
+
+        println "STARTING"
         BasicConfigurator.configure()
         LogManager.rootLogger.level = Level.INFO
-        LogManager.getLogger("voldemort").level = Level.INFO
+        LogManager.getLogger("couchdb").level = Level.INFO
 
+        println "getting cfg"
         ConfigObject cfg = new ConfigSlurper().parse(new File(args[0]).toURL())
 
+        println "building logger"
         StatsLogger logger = new StatsLogger(cfg)
+        println "building client factory"
         HashClientFactory storage = loadFactory(cfg.storageType)
 
         List factoryArgs = args[1..<args.length]
+        println "creating vportk"
         VPork vp = new VPork(cfg, storage, logger, factoryArgs)
 
         try {
+        println "let's setup"
             vp.setup()
         } catch(SetupException exc) {
             println "Error running VPork.  Setup exception"
