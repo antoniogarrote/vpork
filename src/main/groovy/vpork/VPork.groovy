@@ -133,11 +133,13 @@ class VPork {
     }
 
     private static HashClientFactory loadFactory(String storageType) {
+        println "creating factory:" + storageType
         if(storageType == "cassandra") {
             return new CassandraClientFactory()
         } else if(storageType == "voldemort") {
             return new VoldemortClientFactory()
         } else if(storageType == "couchdb") {
+            println "it is couchdb"
             return new CouchDBClientFactory()
         } else if(storageType == "memory") {
             return new MemoryClientFactory()
@@ -172,7 +174,7 @@ class VPork {
         HashClientFactory storage = loadFactory(cfg.storageType)
 
         List factoryArgs = args[1..<args.length]
-        println "creating vportk"
+        println "creating vpork"
         VPork vp = new VPork(cfg, storage, logger, factoryArgs)
 
         try {
