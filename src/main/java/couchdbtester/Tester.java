@@ -18,8 +18,9 @@ public class Tester {
     private String docName;
     private Database db;
     private Document document;
+    private int numTries;
     
-    public Tester(com.fourspaces.couchdb.Session s, String db, String doc) {
+    public Tester(com.fourspaces.couchdb.Session s, String db, String doc, Integer i) {
         
         this.session = s;
         this.dbName = db;
@@ -27,7 +28,9 @@ public class Tester {
         
         this.db = this.session.getDatabase(dbName);
 
-        this.document = this.db.getDocument(docName);        
+        this.document = this.db.getDocument(docName);
+
+        this.numTries = i.intValue();
     }
 
     public Object get(String key) {
@@ -39,8 +42,23 @@ public class Tester {
         }
     }
 
-    void put(String key, byte[] value) {
-        this.document.put(key,value);
-        this.db.saveDocument(document);
+    void put(String key, byte[] value) throws Exception {
+        boolean successful = false;
+        int tries = 0;
+
+        while(!successful && tries<this.numTries) {
+            try {
+                this.document.put(key, value);
+                this.db.saveDocument(document);
+                successful = true;
+            } catch(Exception ex) {
+                this.document.refresh();
+                tries++;
+            }
+        }
+
+        if(successful == false) {
+            throw new Exception("Unable to store value");
+        }
     }
 }

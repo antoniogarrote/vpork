@@ -8,10 +8,11 @@ storeFactory {
     storePort         = 5984
     database          = "vpork"
     document          = "test"
+    retries           = 5
 }
 
 // # of client threads to start
-numThreads  = 30
+numThreads  = 2
 
 // Odds of performing a read op per iteration (1 = 100%)
 readOdds    = 0.1
@@ -19,7 +20,7 @@ writeOdds   = 0.8
 rewriteOdds = 0.1
 
 // How many iterations should each thread execute?
-threadIters = 2000
+threadIters = 30
 
 // How much data should be written per write operation?
 dataSize    = (8 + 4) * 2000

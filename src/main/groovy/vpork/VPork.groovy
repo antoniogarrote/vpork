@@ -133,13 +133,11 @@ class VPork {
     }
 
     private static HashClientFactory loadFactory(String storageType) {
-        println "creating factory:" + storageType
         if(storageType == "cassandra") {
             return new CassandraClientFactory()
         } else if(storageType == "voldemort") {
             return new VoldemortClientFactory()
         } else if(storageType == "couchdb") {
-            println "it is couchdb"
             return new CouchDBClientFactory()
         } else if(storageType == "memory") {
             return new MemoryClientFactory()
@@ -160,25 +158,19 @@ class VPork {
         }
 
 
-        println "STARTING"
         BasicConfigurator.configure()
         LogManager.rootLogger.level = Level.INFO
         LogManager.getLogger("couchdb").level = Level.INFO
 
-        println "getting cfg"
         ConfigObject cfg = new ConfigSlurper().parse(new File(args[0]).toURL())
 
-        println "building logger"
         StatsLogger logger = new StatsLogger(cfg)
-        println "building client factory"
         HashClientFactory storage = loadFactory(cfg.storageType)
 
         List factoryArgs = args[1..<args.length]
-        println "creating vpork"
         VPork vp = new VPork(cfg, storage, logger, factoryArgs)
 
         try {
-        println "let's setup"
             vp.setup()
         } catch(SetupException exc) {
             println "Error running VPork.  Setup exception"
