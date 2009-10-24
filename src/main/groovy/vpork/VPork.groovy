@@ -19,6 +19,7 @@ package vpork
 
 import vpork.voldemort.VoldemortClientFactory
 import vpork.cassandra.CassandraClientFactory
+import vpork.cassandra.CouchDBClientFactory
 import vpork.memory.MemoryClientFactory
 
 import java.util.concurrent.atomic.AtomicBoolean
@@ -37,7 +38,7 @@ import org.apache.log4j.Logger
 class VPork {
 
     private ConfigObject cfg
-    private HashClientFactory clientFactory 
+    private HashClientFactory clientFactory
     private StatsLogger logger
     private List<String>factoryArgs
 
@@ -54,7 +55,7 @@ class VPork {
      * Setup our thread pools, get a store client, prepare everything
      * to run.
      */
-    void setup() {       
+    void setup() {
         logger.setup()
         clientFactory.setup(cfg, logger, factoryArgs)
     }
@@ -67,7 +68,7 @@ class VPork {
         logger.start()
 
         ExecutorService executor = startPorkerThreads()
-        
+
         executor.shutdown()
         executor.awaitTermination(60 * 60 * 2, TimeUnit.SECONDS) // 2 hours
         shuttingDown.set(true)
@@ -113,7 +114,7 @@ class VPork {
                 sleep(1000)
                 continue
             }
-            
+
             executor.execute() {
                 Porker porker = porkers.take()
                 try {
@@ -121,7 +122,7 @@ class VPork {
                 } finally {
                     porkers.put(porker)
                 }
-                
+
             }
         }
         executor
@@ -136,6 +137,8 @@ class VPork {
             return new CassandraClientFactory()
         } else if(storageType == "voldemort") {
             return new VoldemortClientFactory()
+        } else if(storageType == "couchdb") {
+            return new CouchDBClientFactory()
         } else if(storageType == "memory") {
             return new MemoryClientFactory()
         } else {
