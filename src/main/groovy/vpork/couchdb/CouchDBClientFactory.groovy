@@ -20,9 +20,12 @@ class CouchDBClientFactory implements HashClientFactory {
     HashClient createClient() {
         String databaseName = cfg.storeFactory.database
         String documentName = cfg.storeFactory.document
+        print databaseName
+        print documentName
         this.retries = cfg.storeFactory.retries
 
         String node = nodes[r.nextInt(nodes.size())]
+        print node
         Session s = new Session(node,cfg.storeFactory.storePort)
         return new vpork.couchdb.CouchDBAdapter(s,databaseName,documentName,this.retries)
     }

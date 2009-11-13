@@ -5,24 +5,24 @@ testName="30-thread-pork"
  * Configuration of the Voldemort ClientStore.
  */
 storeFactory {
-    storePort         = 9160
-    tableName         = "Table1"
-    columnFamilyColumn         = "Standard1:column"
+    storePort          = 9160
+    tableName          = "Test"
+    columnFamilyColumn = "TestColumnFamily" // :column
 }
 
 // # of client threads to start
 numThreads  = 30
 
 // Odds of performing a read op per iteration (1 = 100%)
-readOdds    = 0.1
-writeOdds   = 0.8
-rewriteOdds = 0.1
+readOdds    = 0.95
+writeOdds   = 0.05
+rewriteOdds = 0.0
 
 // How many iterations should each thread execute?
-threadIters = 2000
+threadIters = 6000
 
 // How much data should be written per write operation?
-dataSize    = (8 + 4) * 2000
+dataSize    = (8 + 4) * 6000
 
 // What function best describes our data access patterns?  This factor is
 // is applied across the range of already-written records.  We choose a function

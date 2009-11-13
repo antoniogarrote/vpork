@@ -1,32 +1,24 @@
 package vpork.cassandra
 
-import org.apache.cassandra.service.Cassandra;
-import org.apache.cassandra.service.NotFoundException
-import vpork.HashClient;
+import cassandratester.Tester
+import org.apache.cassandra.service.Cassandra
+import vpork.HashClient
 
 /**
  * Adapts the Cassandra interface to the one used by VPork
  */
 public class CassandraAdapter implements HashClient {
-	private Cassandra.Client client
-	private String tableName
-	private String columnFamilyColumn
+	private Tester c;
 
-	public CassandraAdapter(Cassandra.Client client, String tableName, String columnFamilyColumn) {
-	    this.client = client
-	    this.tableName = tableName
-	    this.columnFamilyColumn = columnFamilyColumn
+	public CassandraAdapter(org.apache.cassandra.service.Cassandra.Client client, String tableName, String columnFamilyColumn) {
+            this.c = new Tester(client, tableName, columnFamilyColumn)
 	}
 
 	byte[] get(String key) {
-	    try {
-	        return client.get_column(tableName, key, columnFamilyColumn).value
-	    } catch (NotFoundException e) {
-	        return null
-	    }
+            return c.get(key)
 	}
 
 	void put(String key, byte[] value) {
-	    client.insert(tableName, key, columnFamilyColumn, value, System.currentTimeMillis(), true)
+            c.put(key,value)
 	}
 }

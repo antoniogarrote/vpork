@@ -19,6 +19,7 @@ package vpork
 
 import vpork.voldemort.VoldemortClientFactory
 import vpork.cassandra.CassandraClientFactory
+import vpork.redis.RedisClientFactory
 import vpork.couchdb.CouchDBClientFactory
 import vpork.memory.MemoryClientFactory
 
@@ -46,6 +47,7 @@ class VPork {
           StatsLogger logger, List<String>factoryArgs)
     {
         this.cfg = cfg
+        print "EL estorage:"+storage
         this.clientFactory = storage
         this.logger = logger
         this.factoryArgs = factoryArgs
@@ -139,6 +141,8 @@ class VPork {
             return new VoldemortClientFactory()
         } else if(storageType == "couchdb") {
             return new CouchDBClientFactory()
+        }  else if(storageType == "redis") {
+            return new RedisClientFactory()
         } else if(storageType == "memory") {
             return new MemoryClientFactory()
         } else {
@@ -160,10 +164,12 @@ class VPork {
 
         BasicConfigurator.configure()
         LogManager.rootLogger.level = Level.INFO
-        LogManager.getLogger("couchdb").level = Level.INFO
+        LogManager.getLogger("vpork").level = Level.INFO
 
         ConfigObject cfg = new ConfigSlurper().parse(new File(args[0]).toURL())
 
+        print "configuration"
+        print cfg
         StatsLogger logger = new StatsLogger(cfg)
         HashClientFactory storage = loadFactory(cfg.storageType)
 
