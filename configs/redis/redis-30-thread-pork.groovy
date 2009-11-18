@@ -2,7 +2,7 @@ storageType="redis"
 testName="redis-30-thread-pork"
 
 /**
- * Configuration of the Voldemort ClientStore.
+ * Configuration of the Redis ClientStore.
  */
 storeFactory {
     storePort          = 6379
